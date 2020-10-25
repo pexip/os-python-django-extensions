@@ -1,0 +1,9 @@
+# these fail under autopkgtest due to assuming being run from the source tree
+--ignore=tests/test_dumpscript.py
+--ignore=tests/test_runscript.py
+--ignore=tests/test_management_command.py
+--ignore=tests/management/commands/test_create_command.py
+--ignore=tests/management/commands/test_drop_test_database.py
+--ignore=tests/management/commands/test_reset_db.py
+--ignore=tests/management/commands/test_reset_schema.py
+

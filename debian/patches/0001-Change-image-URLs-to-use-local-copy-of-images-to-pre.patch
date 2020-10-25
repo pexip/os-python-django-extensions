@@ -1,0 +1,48 @@
+From: Michael Fladischer <fladi@debian.org>
+Date: Thu, 19 May 2016 11:08:28 +0200
+Subject: Change image URLs to use local copy of images to prevent privacy
+ breach.
+
+---
+ docs/runserver_plus.rst | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/docs/runserver_plus.rst b/docs/runserver_plus.rst
+index e237516..35546f2 100644
+--- a/docs/runserver_plus.rst
++++ b/docs/runserver_plus.rst
+@@ -43,14 +43,14 @@ Usage
+ Instead of the default Django traceback page, the Werkzeug traceback page
+ will be shown when an exception occurs.
+ 
+-.. image:: https://f.cloud.github.com/assets/202559/1261027/2637f826-2c22-11e3-83c6-646acc87808b.png
++.. image:: images/2637f826-2c22-11e3-83c6-646acc87808b.png
+     :alt: werkzeug-traceback
+ 
+ Along with the typical traceback information we have a couple of options. These
+ options appear when hovering over a particular traceback line.  Notice that
+ two buttons appear to the right:
+ 
+-.. image:: https://f.cloud.github.com/assets/202559/1261035/558ad0ee-2c22-11e3-8ddd-6678d84d77e7.png
++.. image:: images/558ad0ee-2c22-11e3-8ddd-6678d84d77e7.png
+     :alt: werkzeug-options
+ 
+ The options are:
+@@ -61,7 +61,7 @@ View Source
+ 
+ This displays the source underneath the traceback:
+ 
+-.. image:: https://f.cloud.github.com/assets/202559/1261036/583c8c42-2c22-11e3-9eb9-5c16b8732512.png
++.. image:: images/583c8c42-2c22-11e3-9eb9-5c16b8732512.png
+     :alt: werkzeug-source
+ 
+ Being able to view the source file is handy because it provides more
+@@ -78,7 +78,7 @@ Interactive Debugging Console
+ Clicking on this button opens up a new pane under the traceback line
+ you're on. This is the money shot:
+ 
+-.. image:: https://f.cloud.github.com/assets/202559/1261037/5d12eda6-2c22-11e3-802a-2639ff8813fa.png
++.. image:: images/5d12eda6-2c22-11e3-802a-2639ff8813fa.png
+     :alt: werkzeug-debugger
+ 
+ An ajax based console appears in the pane and you can start debugging.

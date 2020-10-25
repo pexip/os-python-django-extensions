@@ -1,0 +1,317 @@
+python-django-extensions (3.0.3-3) unstable; urgency=medium
+
+  * debian/tests/control
+    - upgrade b-d on pygments to >= 2.7.1+dfsg-1~
+
+ -- Sandro Tosi <morph@debian.org>  Sun, 25 Oct 2020 17:51:51 -0400
+
+python-django-extensions (3.0.3-2) unstable; urgency=medium
+
+  [ Ondřej Nový ]
+  * d/control: Update Maintainer field with new Debian Python Team
+    contact address.
+  * d/control: Update Vcs-* fields with new Debian Python Team Salsa
+    layout.
+
+  [ Sandro Tosi ]
+  * debian/patches/4ba2513ddb3815cdc15d0c5f681b5665f300718c.patch
+    - css style change for new versions of pygments
+      stored in .pc/ are also tested
+  * debian/rules
+    - only run tests in the tests/ directory, else files patched by quilt and
+      stored in .pc/ are also collected and tested
+  * debian/patches/0002-Update-reference-to-python-werzeug-package.patch
+    - refresh patch
+  * debian/patches/python39_html_unescape.patch
+    - support python 3.9 by using unescape() from the html module directly
+  * debian/patches/python39_singular_abstract_class_msg.patch
+    - support python3.9 by special casing the abstract class error message
+
+ -- Sandro Tosi <morph@debian.org>  Sun, 18 Oct 2020 23:05:55 -0400
+
+python-django-extensions (3.0.3-1) unstable; urgency=medium
+
+  * Team upload
+
+  [ Ondřej Nový ]
+  * Bump Standards-Version to 4.4.1.
+
+  [ Debian Janitor ]
+  * Bump debhelper from old 11 to 12.
+  * Set upstream metadata fields: Bug-Database, Bug-Submit, Repository,
+    Repository-Browse.
+
+  [ Antonio Terceiro ]
+  * New upstream version 3.0.3
+    - Upstream source drops support for Django < 2 and python2.7
+    - Works with Django 3 (Closes: #961166)
+  * 0002-Update-reference-to-python-werzeug-package.patch: s/python/python3/
+  * Run test suite during build and under autopkgtest
+  * Add new build dependency: python3-pip
+
+ -- Antonio Terceiro <terceiro@debian.org>  Wed, 22 Jul 2020 14:29:08 -0300
+
+python-django-extensions (2.2.1-1) unstable; urgency=medium
+
+  * Team upload.
+  * New upstream version 2.2.1
+
+ -- Antonio Terceiro <terceiro@debian.org>  Tue, 13 Aug 2019 23:20:57 -0300
+
+python-django-extensions (2.1.4-2) unstable; urgency=medium
+
+  [ Ondřej Nový ]
+  * Use debhelper-compat instead of debian/compat.
+
+  [ Thomas Goirand ]
+  * Team upload.
+  * Removed Python 2 support.
+  * Removed version in python3-django depends.
+  * Fixed path in doc-base file.
+
+ -- Thomas Goirand <zigo@debian.org>  Fri, 26 Jul 2019 22:44:30 +0200
+
+python-django-extensions (2.1.4-1) unstable; urgency=medium
+
+  * Team upload
+
+  [ Ondřej Nový ]
+  * d/control: Set Vcs-* to salsa.debian.org
+  * d/copyright: Use https protocol in Format field
+  * d/control: Remove ancient X-Python-Version field
+  * d/control: Remove ancient X-Python3-Version field
+  * Use 'python3 -m sphinx' instead of sphinx-build for building docs
+
+  [ Pierre-Elliott Bécue ]
+  * New upstream release 2.1.4 (Closes: #915757)
+  * d/copyright updated
+  * d/rules:
+    - Remove references to jquery
+    - Remove get-orig-source rule
+  * d/control:
+    - Add dependency on typing
+    - Raise debhelper build-dependency version to 11~
+    - Bump Standards-Version to 4.2.1
+    - Add basic testsuite
+  * d/compat: raise dh compat level to 11
+  * d/python-django-extensions-doc.{docs,doc-base}:
+    - Updated accordingly to dh compat level 11
+
+ -- Pierre-Elliott Bécue <peb@debian.org>  Sat, 22 Dec 2018 21:42:27 +0100
+
+python-django-extensions (1.8.1-1) unstable; urgency=medium
+
+  [ Scott Kitterman ]
+  * Set minimum python/python3-django depends version to >= 1.8 as described
+    in README.rst and #843975
+
+  [ Brian May ]
+  * New upstream version.
+
+ -- Brian May <bam@debian.org>  Thu, 06 Jul 2017 07:32:39 +1000
+
+python-django-extensions (1.7.4-1) unstable; urgency=medium
+
+  * New upstream version.
+  * Fixes Django 1.10 issues. Closes: #828665, #828207.
+
+ -- Brian May <bam@debian.org>  Sun, 06 Nov 2016 09:53:52 +1100
+
+python-django-extensions (1.6.7-3) unstable; urgency=medium
+
+  * Add Suggests: python-django-extensions-doc to packages.
+    Closes: #825967.
+
+ -- Brian May <bam@debian.org>  Thu, 30 Jun 2016 18:06:53 +1000
+
+python-django-extensions (1.6.7-2) unstable; urgency=low
+
+  * Add documentation package and use python3-sphinx to build the
+    documentation from source.
+  * Add patch to change image URLs to use local copy of images to
+    prevent privacy breach.
+  * Ship and use local screenshot images for documentation to replace
+    the ones hosted on github.
+  * Rebuild all django.mo files from source using python-babel.
+
+ -- Michael Fladischer <fladi@debian.org>  Thu, 19 May 2016 11:39:20 +0200
+
+python-django-extensions (1.6.7-1) unstable; urgency=low
+
+  * Team upload.
+  * New upstream release.
+  * Clean .coverage file to allow two builds in a row.
+  * Clean django_extensions.egg-info folder to allow two builds in a row.
+  * Remove unnecessary versioned dependencies.
+  * Remove python{,3}-profiler from Suggests as it is provided by
+    python{,3} itself.
+  * Remove python3-keyczar from Suggests as it does not exist.
+  * Rename MIT license to Expat.
+  * Provide unique descriptions for both binary packages.
+  * Reformat packaging files with cme for better readability.
+  * Add missing X-Python3-Version field.
+  * Add python-keyczar to Build-Depends in order to enable related tests
+    for encrypted fields.
+  * Fix copyright entries for jquery.js (removed) and
+    jquery.ajaxQueue.js (added).
+  * Add linitian-override for minified jquery.bgiframe.min.js. Source is
+    included in debian/missing-sources/jquery.bgiframe.min.js.
+
+ -- Michael Fladischer <fladi@debian.org>  Wed, 18 May 2016 15:23:47 +0200
+
+python-django-extensions (1.6.3-1) unstable; urgency=medium
+
+  * New upstream version.
+
+ -- Brian May <bam@debian.org>  Mon, 09 May 2016 11:48:53 +1000
+
+python-django-extensions (1.6.1-1) unstable; urgency=medium
+
+  * New upstream version.
+  * Fix FTBFS. Closes: #806364.
+
+ -- Brian May <bam@debian.org>  Tue, 26 Apr 2016 16:40:49 +1000
+
+python-django-extensions (1.5.9-1) unstable; urgency=medium
+
+  * New upstream version.
+  * Fixes migration issues with Django 1.8. Closes: #805359.
+
+ -- Brian May <bam@debian.org>  Wed, 18 Nov 2015 17:48:10 +1100
+
+python-django-extensions (1.5.7-1) unstable; urgency=medium
+
+  * New upstream version.
+  * Fixes FTBFS error. Closes: #802131.
+
+ -- Brian May <bam@debian.org>  Sat, 24 Oct 2015 14:46:20 +1100
+
+python-django-extensions (1.5.0-1) unstable; urgency=medium
+
+  * Update maintainer field; package is now maintained by Debian Python
+    modules team. Thanks to Stephan Sürken for packaging
+    python-django-extensions up to this point and and giving permission
+    to make this change.
+  * New upstream version & Python 3 package. Closes: 776901.
+  * Update standards version to 3.9.6.
+  * Update obsolete URL in debian/copyright.
+
+ -- Brian May <bam@debian.org>  Thu, 05 Feb 2015 09:38:57 +1100
+
+python-django-extensions (1.3.10-1) unstable; urgency=medium
+
+  * [de99797] Imported Upstream version 1.3.10
+  * [11b7842] copyright: Fix 'duplicate Copyright field' syntax error.
+  * [444103c] copyright: Replace '|' by 'or' in 'License' field (that's
+    how it's documented; fixes lintian missing-license-paragraph-in-
+    dep5-copyright)
+  * django 1.7 support is currently an ongoing effort in uspstream
+    development. Quite some fixes already made it to 1.3.10, and the
+    current open usptream issues do not seem to be worrying, see
+     https://github.com/django-extensions/django-extensions/issues?q=is%3Aissue+is%3Aopen+1.7
+    For all my known use cases, it's working fine.
+    So this imho (Closes: #755620).
+
+ -- Stephan Sürken <absurd@debian.org>  Fri, 08 Aug 2014 17:54:56 +0200
+
+python-django-extensions (1.3.8-1) unstable; urgency=medium
+
+  * [863d899] rules: get-orig-source: Just use uscan (now grabs actual
+    releases, not producing git snapshots)
+  * [e34d8d1] Imported Upstream version 1.3.7
+  * [7e99a55] Migrate from python-support to dh_python2 (this also
+    upgrades to debhelper 9).
+  * [4c98e99] Imported Upstream version 1.3.8
+  * [198de9a] rules: Remove workaround to rm embedded uuid.py (no longer
+    in upstream).
+  * [313fb12] rules: Fix for clean: Remove any *.egg-info/.
+  * [6cb7f1e] [Add .gitignore for debian/.]
+  * [d92494b] copyright: Add Format header and copyright for debian/* for
+    new maintainer.
+
+ -- Stephan Sürken <absurd@debian.org>  Fri, 13 Jun 2014 17:04:47 +0000
+
+python-django-extensions (1.3.3-2) unstable; urgency=medium
+
+  * [eab12b5] debian/control: VCS moved to alioth, fixing VCS URLs.
+
+ -- Stephan Sürken <absurd@debian.org>  Tue, 01 Apr 2014 16:47:17 +0200
+
+python-django-extensions (1.3.3-1) unstable; urgency=medium
+
+  * [ee8aef5] Imported Upstream version 1.3.3
+  * [7e01ec3] watch: Update watchfile (as hinted by PTS).
+
+ -- Stephan Sürken <absurd@debian.org>  Sun, 09 Mar 2014 14:46:37 +0000
+
+python-django-extensions (1.2.5-1) unstable; urgency=low
+
+  [ Stephan Sürken ]
+  * [9a4f8dd] Imported Upstream version 1.2.5 (Closes: #690425).
+  * [563777b] patches/01-werkzeug-package.diff: Refresh for upstream 1.2.5.
+  * [ce22404] control: New upstream needs python-six.
+  * [336ae49] control: Taking over package, fix Maintainer field.
+  * [10707a6] control: Update Stds-Ver to 3.9.5 (no changes needed).
+
+ -- Stephan Sürken <absurd@debian.org>  Tue, 12 Nov 2013 16:14:34 +0100
+
+python-django-extensions (0.6+git201107051902-1) unstable; urgency=low
+
+  * New upstream release.
+    - Does not depend on keyczar anymore (Closes: #633874)
+  * Update Vcs-{Git,Browser}.
+  * Bump Standards-Version to 3.9.1.
+  * Bump Standards-Version to 3.9.2.
+  * Bump base version in get-orig-source target.
+  * Add python-keyczar to Suggests.
+  * Update Homepage.
+
+ -- Chris Lamb <lamby@debian.org>  Thu, 28 Jul 2011 12:07:19 +0200
+
+python-django-extensions (0.4.2pre+git201004211325-1) unstable; urgency=low
+
+  * New upstream snapshot
+  * Refresh 01-werkzeug-package.diff
+
+ -- Chris Lamb <lamby@debian.org>  Thu, 22 Apr 2010 09:16:51 +0100
+
+python-django-extensions (0.4.2pre+git200911182050-2) unstable; urgency=low
+
+  * Use find(1) over python.mk to locate embedded jQuery and drop python.mk
+    include to help backporters. (Closes: #578599)
+  * Bump Standards-Version to 3.8.4.
+  * Move to 3.0 (quilt) source format.
+  * Tidy patch descriptions.
+
+ -- Chris Lamb <lamby@debian.org>  Wed, 21 Apr 2010 10:06:33 +0100
+
+python-django-extensions (0.4.2pre+git200911182050-1) unstable; urgency=low
+
+  * New upstream release.
+  * Remove embedded uuid.py code copy used as fallback if "import uuid" fails.
+    (Closes: #555430)
+  * Bump Standards-Version to 3.8.3.
+  * Bump Build-Depends on debhelper to 7.0.50~ for override_* support.
+
+ -- Chris Lamb <lamby@debian.org>  Fri, 27 Nov 2009 17:59:30 +0000
+
+python-django-extensions (0.4+git200905112140-2) unstable; urgency=low
+
+  * Fix compatibility with Python 2.6 and future Python transitions in general.
+    Thanks to Krzysztof Klimonda <kklimonda@syntaxhighlighted.com>.
+
+ -- Chris Lamb <lamby@debian.org>  Sat, 16 May 2009 00:04:19 +0100
+
+python-django-extensions (0.4+git200905112140-1) unstable; urgency=low
+
+  * New upstream release.
+  * Upstream moved to Git; update get-orig-source.
+  * Use shorted method of invoking quilt using debhelper 7.
+
+ -- Chris Lamb <lamby@debian.org>  Tue, 12 May 2009 21:24:00 +0100
+
+python-django-extensions (0.4~pre+svn188-1) unstable; urgency=low
+
+  * Initial release (Closes: #521349)
+
+ -- Chris Lamb <lamby@debian.org>  Thu, 26 Mar 2009 23:45:55 +0000

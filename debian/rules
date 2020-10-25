@@ -1,0 +1,29 @@
+#!/usr/bin/make -f
+
+export PYBUILD_NAME=django-extensions
+
+%:
+	dh $@ --with python3,sphinxdoc --buildsystem=pybuild
+
+override_dh_install:
+	dh_install
+
+
+test_opts = $(shell grep -v '^\s*\#' debian/tests/options.txt)
+override_dh_auto_test:
+	PYTHONPATH=. \
+	dh_auto_test -- --system=custom --test-args="{interpreter} -m pytest --cov=django_extensions $(test_opts) tests"
+
+override_dh_auto_build:
+	set -e; \
+	for loc in django_extensions/locale/*; do \
+		python3 setup.py compile_catalog --directory django_extensions/locale/ --locale $$(basename $$loc) --domain django; \
+	done
+	mkdir docs/images
+	ln debian/images/* docs/images
+	PYTHONPATH=. python3 -m sphinx -b html -d docs/.build/.doctrees -N docs docs/.build/html
+	dh_auto_build
+
+override_dh_clean:
+	rm -rf docs/.build docs/images
+	dh_clean

@@ -1,0 +1,8 @@
+Document: python-django-extensions-doc
+Title: Django Extensions Documentation
+Author: Michael Trier, Bas van Oostveen and contributors
+Section: Programming/Python
+
+Format: HTML
+Index: /usr/share/doc/python-django-extensions-doc/html/index.html
+Files: /usr/share/doc/python-django-extensions-doc/html/*.html

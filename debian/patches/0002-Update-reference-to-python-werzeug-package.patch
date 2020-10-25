@@ -1,0 +1,21 @@
+From: Brian May <bam@debian.org>
+Date: Sun, 6 Nov 2016 09:51:19 +1100
+Subject: Update reference to python-werzeug package
+
+Point people towards installing the python-werzeug package, not to
+download random files from the internet.
+---
+ django_extensions/management/commands/runserver_plus.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/django_extensions/management/commands/runserver_plus.py
++++ b/django_extensions/management/commands/runserver_plus.py
+@@ -231,7 +231,7 @@ class Command(BaseCommand):
+                     pass
+ 
+         except ImportError:
+-            raise CommandError("Werkzeug is required to use runserver_plus.  Please visit http://werkzeug.pocoo.org/ or install via pip. (pip install Werkzeug)")
++            raise CommandError("Werkzeug is required to use runserver_plus.  Please install `python3-werkzeug'")
+ 
+         class WSGIRequestHandler(_WSGIRequestHandler):
+             def make_environ(self):

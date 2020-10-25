@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -eu
+
+alias getopts="grep -v '^\s*#'"
+opts=$(getopts debian/tests/options.txt)
+autopkgtest_opts=$(getopts debian/tests/autopkgtest-options.txt)
+cp -r tests/ ${AUTOPKGTEST_TMP}
+cd ${AUTOPKGTEST_TMP}
+python3 -m pytest $opts $autopkgtest_opts
