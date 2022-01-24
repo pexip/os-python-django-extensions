@@ -1,3 +1,9 @@
+python-django-extensions (3.0.3-3pexip1) pexip; urgency=medium
+
+  * Prepare Pexip packaging
+
+ -- Huw Jones <huw@pexip.com>  Mon, 24 Jan 2022 16:03:49 +0000
+
 python-django-extensions (3.0.3-3) unstable; urgency=medium
 
   * debian/tests/control
