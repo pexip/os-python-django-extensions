@@ -1,3 +1,9 @@
+python-django-extensions (3.0.3-3pexip2) pexip; urgency=medium
+
+  * Respin for main
+
+ -- Huw Jones <huw@pexip.com>  Tue, 25 Jan 2022 11:58:09 +0000
+
 python-django-extensions (3.0.3-3pexip1) pexip; urgency=medium
 
   * Prepare Pexip packaging
