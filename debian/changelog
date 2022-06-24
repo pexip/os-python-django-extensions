@@ -1,3 +1,9 @@
+python-django-extensions (3.0.3-3pexip4) pexip-bullseye; urgency=medium
+
+  * Main bullseye build
+
+ -- Mark Hymers <mark.hymers@pexip.com>  Fri, 24 Jun 2022 14:04:23 +0100
+
 python-django-extensions (3.0.3-3pexip3) pexip; urgency=medium
 
   * Initial bullseye build
