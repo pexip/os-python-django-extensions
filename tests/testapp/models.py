@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-import django
-
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.db.models import UniqueConstraint
 from django.db.models.signals import pre_save
 
 from django_extensions.db.fields import AutoSlugField, ModificationDateTimeField, RandomCharField, ShortUUIDField
@@ -10,9 +9,6 @@ from django_extensions.db.fields.json import JSONField
 from django_extensions.db.models import ActivatorModel, TimeStampedModel
 
 from .fields import UniqField
-
-if django.VERSION >= (2, 2):
-    from django.db.models import UniqueConstraint
 
 
 class Secret(models.Model):
@@ -47,6 +43,20 @@ class Note(models.Model):
         app_label = 'django_extensions'
 
 
+class Neighborhood(models.Model):
+    name = models.CharField(max_length=50)
+
+    class Meta:
+        app_label = 'django_extensions'
+
+
+class Bank(models.Model):
+    name = models.CharField(max_length=50)
+
+    class Meta:
+        app_label = 'django_extensions'
+
+
 class Person(models.Model):
     name = models.ForeignKey(Name, on_delete=models.CASCADE)
     age = models.PositiveIntegerField()
@@ -58,6 +68,8 @@ class Person(models.Model):
         on_delete=models.CASCADE,
     )
     clubs = models.ManyToManyField(Club, through='testapp.Membership')
+    neighborhood = models.ForeignKey(Neighborhood, on_delete=models.SET_NULL, null=True)
+    current_bank = models.ForeignKey(Bank, on_delete=models.PROTECT, null=True)
 
     class Meta:
         app_label = 'django_extensions'
@@ -100,7 +112,12 @@ class ThirdDummyRelationModel(models.Model):
         app_label = 'django_extensions'
 
 
-class PostWithUniqField(models.Model):
+class PostWithUniqFieldCompat(models.Model):
+    """
+    django-extensions from version 3.0 officially supports only Django 2.2+ which
+    introduced Meta.constraints and suggests using it instead of Meta.unique_together
+    this is left only to ensure compatibility with Meta.unique_together
+    """
     uniq_field = UniqField(
         max_length=255,
         boolean_attr=True,
@@ -115,6 +132,40 @@ class PostWithUniqField(models.Model):
     class Meta:
         app_label = 'django_extensions'
         unique_together = ('common_field', 'uniq_field',)
+
+
+class ReverseModelCompat(models.Model):
+    post_field = models.ForeignKey(PostWithUniqFieldCompat, related_name='reverse_models', on_delete=models.CASCADE)
+
+    class Meta:
+        app_label = 'django_extensions'
+
+
+class InheritedFromPostWithUniqFieldCompat(PostWithUniqFieldCompat):
+    new_field = models.CharField(max_length=10)
+
+    class Meta:
+        app_label = 'django_extensions'
+
+
+class PostWithUniqField(models.Model):
+    uniq_field = UniqField(
+        max_length=255,
+        boolean_attr=True,
+        non_boolean_attr='non_boolean_attr'
+    )
+    common_field = models.CharField(max_length=10)
+    another_common_field = models.CharField(max_length=10)
+    many_to_one_field = models.ForeignKey(DummyRelationModel, on_delete=models.CASCADE)
+    one_to_one_field = models.OneToOneField(SecondDummyRelationModel, on_delete=models.CASCADE)
+    many_to_many_field = models.ManyToManyField(ThirdDummyRelationModel, related_name='posts22_with_uniq')
+
+    class Meta:
+        app_label = 'django_extensions'
+        constraints = [
+            models.UniqueConstraint(fields=('common_field', 'uniq_field'), name='unique_common_uniq_pair'),
+            models.CheckConstraint(check=~models.Q(common_field=models.F("another_common_field")), name='common_and_another_common_differ'),
+        ]
 
 
 class ReverseModel(models.Model):
@@ -159,13 +210,12 @@ class SluggedWithConstraintsTestModel(models.Model):
 
     class Meta:
         app_label = 'django_extensions'
-        if django.VERSION >= (2, 2):
-            constraints = [
-                UniqueConstraint(
-                    fields=['slug', 'category'],
-                    name="unique_slug_and_category",
-                ),
-            ]
+        constraints = [
+            UniqueConstraint(
+                fields=['slug', 'category'],
+                name="unique_slug_and_category",
+            ),
+        ]
 
 
 class SluggedWithUniqueTogetherTestModel(models.Model):
@@ -423,6 +473,19 @@ class UniqueTestAppModel(models.Model):
 class SqlDiff(models.Model):
     number = models.CharField(max_length=40, null=True, verbose_name='Chargennummer')
     creator = models.CharField(max_length=20, null=True, blank=True)
+
+    class Meta:
+        index_together = ['number', 'creator']
+
+
+class SqlDiffIndexes(models.Model):
+    first = models.CharField(max_length=40, null=True, verbose_name='Chargennummer')
+    second = models.CharField(max_length=20, null=True, blank=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['first', 'second']),
+        ]
 
 
 class SqlDiffUniqueTogether(models.Model):

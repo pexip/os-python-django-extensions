@@ -1,3 +1,89 @@
+python-django-extensions (3.2.1-2) unstable; urgency=medium
+
+  [ Debian Janitor ]
+  * Set field Upstream-Contact in debian/copyright.
+  * Remove obsolete field Contact from debian/upstream/metadata (already present
+    in machine-readable debian/copyright).
+
+ -- Jelmer Vernooĳ <jelmer@debian.org>  Sun, 20 Nov 2022 12:09:39 +0000
+
+python-django-extensions (3.2.1-1) unstable; urgency=medium
+
+  * Team upload
+
+  [ Debian Janitor ]
+  * Set field Upstream-Name in debian/copyright
+  * Set upstream metadata fields: Contact
+  * Fix day-of-week for changelog entry 3.2.0-1
+
+  [ Carsten Schoenert ]
+  * [6959af7] New upstream version 3.2.1
+
+ -- Carsten Schoenert <c.schoenert@t-online.de>  Sun, 11 Sep 2022 18:31:22 +0200
+
+python-django-extensions (3.2.0-1) unstable; urgency=medium
+
+  * Team upload
+  * New upstream version 3.2.0
+    (Closes: #1013536)
+  * d/control: Update Standards-Version to 4.6.1
+  * autopkgtest: Ignore new added test from upstream
+    We need also to ignore test_managestate.py within an autopkgtest run.
+
+ -- Carsten Schoenert <c.schoenert@t-online.de>  Tue, 09 Aug 2022 21:04:01 +0200
+
+python-django-extensions (3.1.5-2) unstable; urgency=medium
+
+  * Drop d/p/0003-CSS-style-change-for-new-versions-of-pygments.patch for
+    pygments 2.10.0 compatibility (fixes autopkgtest)
+
+ -- Lukas Märdian <luk@slyon.de>  Fri, 17 Dec 2021 15:38:06 +0100
+
+python-django-extensions (3.1.5-1) unstable; urgency=medium
+
+  * Team upload
+
+  * New upstream version 3.1.5
+
+ -- Carsten Schoenert <carsten.schoenert@puri.sm>  Thu, 11 Nov 2021 20:55:22 +0100
+
+python-django-extensions (3.1.3-1) unstable; urgency=medium
+
+  * Team upload
+
+  [ Diego M. Rodriguez ]
+  * d/.links - use python-django-extensions-doc (Closes: #988793)
+
+  [ Carsten Schoenert ]
+  * New upstream version 3.1.3
+  * Rebuild patch queue from patchqueue branch
+    Renamed patch:
+    0001-Change-image-URLs-to-use-local-copy-of-images-to-pre.patch
+    -> 0001-Use-local-stored-images-to-prevent-privacy-breach.patch
+
+    4ba2513ddb3815cdc15d0c5f681b5665f300718c.patch
+    -> 0003-CSS-style-change-for-new-versions-of-pygments.patch
+
+    Updated/adjusted patch:
+    0002-Update-reference-to-python-werzeug-package.patch
+
+    Removed patches:
+    python39_html_unescape.patch
+    python39_singular_abstract_class_msg.patch
+
+  * Running wrap-and-sort -ast
+  * d/control: Sort binary packages alphabetical
+  * d/control: Mark the -doc package Multi-Arch: foreign
+  * d/control: Bump debhelper version to 13
+  * d/control: Adding entry Rules-Requires-Root: no
+  * d/control: Update Standards-Version to 4.6.0
+    No further changes needed.
+  * d/watch: Update to version 4
+  * d/control: Drop python3-six on source and binary package
+    Upstream has dropped a dependency on the six package.
+
+ -- Carsten Schoenert <c.schoenert@t-online.de>  Sat, 18 Sep 2021 21:34:38 +0200
+
 python-django-extensions (3.0.3-3) unstable; urgency=medium
 
   * debian/tests/control

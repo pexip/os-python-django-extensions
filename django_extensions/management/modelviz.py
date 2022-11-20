@@ -12,10 +12,13 @@ import datetime
 import os
 import re
 
-import six
 from django.apps import apps
+from django.db.models import deletion
 from django.db.models.fields.related import (
     ForeignKey, ManyToManyField, OneToOneField, RelatedField,
+)
+from django.db.models.fields.reverse_related import (
+    OneToOneRel, ManyToOneRel,
 )
 from django.contrib.contenttypes.fields import GenericRelation
 from django.template import Context, Template, loader
@@ -42,7 +45,19 @@ __contributors__ = [
     "Mikkel Munch Mortensen <https://www.detfalskested.dk/>",
     "Andrzej Bistram <andrzej.bistram@gmail.com>",
     "Daniel Lipsitt <danlipsitt@gmail.com>",
+    "Tobias Mitterdorfer <tobias.mitterdorfer97@gmail.com>"
 ]
+
+
+ON_DELETE_COLORS = {
+    deletion.CASCADE: 'red',
+    deletion.PROTECT: 'blue',
+    deletion.SET_NULL: 'orange',
+    deletion.SET_DEFAULT: 'green',
+    deletion.SET: 'yellow',
+    deletion.DO_NOTHING: 'grey',
+    deletion.RESTRICT: 'purple',
+}
 
 
 def parse_file_or_list(arg):
@@ -69,6 +84,7 @@ class ModelGraph:
         self.verbose_names = kwargs.get('verbose_names', False)
         self.inheritance = kwargs.get('inheritance', True)
         self.relations_as_fields = kwargs.get("relations_as_fields", True)
+        self.relation_fields_only = kwargs.get("relation_fields_only", False)
         self.sort_fields = kwargs.get("sort_fields", True)
         self.language = kwargs.get('language', None)
         if self.language is not None:
@@ -81,10 +97,12 @@ class ModelGraph:
         )
         self.hide_edge_labels = kwargs.get('hide_edge_labels', False)
         self.arrow_shape = kwargs.get("arrow_shape")
+        self.color_code_deletions = kwargs.get("color_code_deletions", False)
         if self.all_applications:
             self.app_labels = [app.label for app in apps.get_app_configs()]
         else:
             self.app_labels = app_labels
+        self.rankdir = kwargs.get("rankdir")
 
     def generate_graph_data(self):
         self.process_apps()
@@ -108,6 +126,7 @@ class ModelGraph:
             'disable_fields': self.disable_fields,
             'disable_abstract_fields': self.disable_abstract_fields,
             'use_subgraph': self.use_subgraph,
+            'rankdir': self.rankdir,
         }
 
         if as_json:
@@ -143,12 +162,15 @@ class ModelGraph:
             'label': label,
             'type': t,
             'blank': field.blank,
-            'abstract': field in abstract_fields,
+            'abstract': any(
+                field.creation_counter == abstract_field.creation_counter
+                for abstract_field in abstract_fields
+            ),
             'relation': isinstance(field, RelatedField),
             'primary_key': field.primary_key,
         }
 
-    def add_relation(self, field, model, extras=""):
+    def add_relation(self, field, model, extras="", color=None):
         if self.verbose_names and field.verbose_name:
             label = force_str(field.verbose_name)
             if label.islower():
@@ -166,7 +188,7 @@ class ModelGraph:
             label = ''
 
         # handle self-relationships and lazy-relationships
-        if isinstance(field.remote_field.model, six.string_types):
+        if isinstance(field.remote_field.model, str):
             if field.remote_field.model == 'self':
                 target_model = field.model
             else:
@@ -178,6 +200,9 @@ class ModelGraph:
                 target_model = apps.get_model(app_label, model_name)
         else:
             target_model = field.remote_field.model
+
+        if color:
+            extras = '[{}, color={}]'.format(extras[1:-1], color)
 
         _rel = self.get_relation_context(target_model, field, label, extras)
 
@@ -333,9 +358,15 @@ class ModelGraph:
             # excluding field redundant with inheritance relation
             # excluding fields inherited from abstract classes. they too show as local_fields
             return newmodel
+
+        color = None
+        if self.color_code_deletions and isinstance(field, (OneToOneField, ForeignKey)):
+            field_on_delete = getattr(field.remote_field, 'on_delete', None)
+            color = ON_DELETE_COLORS.get(field_on_delete)
+
         if isinstance(field, OneToOneField):
             relation = self.add_relation(
-                field, newmodel, '[arrowhead=none, arrowtail=none, dir=both]'
+                field, newmodel, '[arrowhead=none, arrowtail=none, dir=both]', color
             )
         elif isinstance(field, ForeignKey):
             relation = self.add_relation(
@@ -344,6 +375,7 @@ class ModelGraph:
                 '[arrowhead=none, arrowtail={}, dir=both]'.format(
                     self.arrow_shape
                 ),
+                color
             )
         else:
             relation = None
@@ -412,11 +444,17 @@ class ModelGraph:
                     return True
             if field.name in self.exclude_columns:
                 return True
+        if self.relation_fields_only:
+            if not isinstance(
+                field,
+                (ForeignKey, ManyToManyField, OneToOneField, RelatedField, OneToOneRel, ManyToOneRel)
+            ):
+                return True
         return False
 
 
 def generate_dot(graph_data, template='django_extensions/graph_models/digraph.dot'):
-    if isinstance(template, six.string_types):
+    if isinstance(template, str):
         template = loader.get_template(template)
 
     if not isinstance(template, Template) and not (hasattr(template, 'template') and isinstance(template.template, Template)):

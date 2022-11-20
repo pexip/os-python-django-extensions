@@ -1,5 +1,2 @@
-4ba2513ddb3815cdc15d0c5f681b5665f300718c.patch
-0001-Change-image-URLs-to-use-local-copy-of-images-to-pre.patch
+0001-Use-local-stored-images-to-prevent-privacy-breach.patch
 0002-Update-reference-to-python-werzeug-package.patch
-python39_html_unescape.patch
-python39_singular_abstract_class_msg.patch

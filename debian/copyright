@@ -1,6 +1,8 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Source: https://github.com/django-extensions/django-extensions
 Author: Michael Trier <mtrier@gmail.com>
+Upstream-Name: django-extensions
+Upstream-Contact: Bas van Oostveen <v.oostveen@gmail.com>
 
 Files: *
 Copyright: © 2007 - 2018 Michael Trier <mtrier@gmail.com>

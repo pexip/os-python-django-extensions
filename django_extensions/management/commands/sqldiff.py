@@ -23,7 +23,6 @@ KNOWN ISSUES:
 
 import importlib
 import sys
-import six
 import argparse
 from typing import Dict, Union, Callable, Optional  # NOQA
 from django.apps import apps
@@ -31,6 +30,7 @@ from django.core.management import BaseCommand, CommandError
 from django.core.management.base import OutputWrapper
 from django.core.management.color import no_style
 from django.db import connection, transaction, models
+from django.db.models import UniqueConstraint
 from django.db.models.fields import AutoField, IntegerField
 from django.db.models.options import normalize_together
 
@@ -382,6 +382,23 @@ class SQLDiff:
             return field_type.split(" ")[0].split("(")[0].lower()
         return field_type
 
+    def get_index_together(self, meta):
+        indexes_normalized = list(normalize_together(meta.index_together))
+
+        for idx in meta.indexes:
+            indexes_normalized.append(idx.fields)
+
+        return self.expand_together(indexes_normalized, meta)
+
+    def get_unique_together(self, meta):
+        unique_normalized = list(normalize_together(meta.unique_together))
+
+        for constraint in meta.constraints:
+            if isinstance(constraint, UniqueConstraint):
+                unique_normalized.append(constraint.fields)
+
+        return self.expand_together(unique_normalized, meta)
+
     def expand_together(self, together, meta):
         new_together = []
         for fields in normalize_together(together):
@@ -399,7 +416,7 @@ class SQLDiff:
                 attname = field.db_column or field.attname
                 db_field_unique = table_indexes.get(attname, {}).get('unique')
                 if not db_field_unique and table_constraints:
-                    db_field_unique = any(constraint['unique'] for contraint_name, constraint in six.iteritems(table_constraints) if [attname] == constraint['columns'])
+                    db_field_unique = any(constraint['unique'] for contraint_name, constraint in table_constraints.items() if [attname] == constraint['columns'])
                 if attname in table_indexes and db_field_unique:
                     continue
 
@@ -412,8 +429,8 @@ class SQLDiff:
                 if db_type.startswith('text'):
                     self.add_difference('index-missing-in-db', table_name, [attname], index_name + '_like', ' text_pattern_ops')
 
-        unique_together = self.expand_together(meta.unique_together, meta)
-        db_unique_columns = normalize_together([v['columns'] for v in six.itervalues(table_constraints) if v['unique'] and not v['index']])
+        unique_together = self.get_unique_together(meta)
+        db_unique_columns = normalize_together([v['columns'] for v in table_constraints.values() if v['unique'] and not v['index']])
 
         for unique_columns in unique_together:
             if unique_columns in db_unique_columns:
@@ -428,9 +445,9 @@ class SQLDiff:
 
     def find_unique_missing_in_model(self, meta, table_indexes, table_constraints, table_name):
         fields = dict([(field.column, field) for field in all_local_fields(meta)])
-        unique_together = self.expand_together(meta.unique_together, meta)
+        unique_together = self.get_unique_together(meta)
 
-        for constraint_name, constraint in six.iteritems(table_constraints):
+        for constraint_name, constraint in table_constraints.items():
             if not constraint['unique']:
                 continue
             if constraint['index']:
@@ -464,8 +481,8 @@ class SQLDiff:
                     if db_type.startswith('text'):
                         self.add_difference('index-missing-in-db', table_name, [attname], index_name + '_like', ' text_pattern_ops')
 
-        index_together = self.expand_together(meta.index_together, meta)
-        db_index_together = normalize_together([v['columns'] for v in six.itervalues(table_constraints) if v['index'] and not v['unique']])
+        index_together = self.get_index_together(meta)
+        db_index_together = normalize_together([v['columns'] for v in table_constraints.values() if v['index'] and not v['unique']])
         for columns in index_together:
             if columns in db_index_together:
                 continue
@@ -479,9 +496,9 @@ class SQLDiff:
     def find_index_missing_in_model(self, meta, table_indexes, table_constraints, table_name):
         fields = dict([(field.column, field) for field in all_local_fields(meta)])
         meta_index_names = [idx.name for idx in meta.indexes]
-        index_together = self.expand_together(meta.index_together, meta)
+        index_together = self.get_index_together(meta)
 
-        for constraint_name, constraint in six.iteritems(table_constraints):
+        for constraint_name, constraint in table_constraints.items():
             if constraint_name in meta_index_names:
                 continue
             if constraint['unique'] and not constraint['index']:
@@ -523,7 +540,7 @@ class SQLDiff:
 
     def find_field_missing_in_db(self, fieldmap, table_description, table_name):
         db_fields = [row[0] for row in table_description]
-        for field_name, field in six.iteritems(fieldmap):
+        for field_name, field in fieldmap.items():
             if field_name not in db_fields:
                 field_output = []
 
@@ -643,7 +660,7 @@ class SQLDiff:
                 transaction.rollback()  # reset transaction
                 continue
 
-            # map table_contraints into table_indexes
+            # map table_constraints into table_indexes
             table_indexes = {}
             for contraint_name, dct in table_constraints.items():
 
@@ -839,10 +856,10 @@ class MySQLDiff(SQLDiff):
     def find_index_missing_in_model(self, meta, table_indexes, table_constraints, table_name):
         fields = dict([(field.column, field) for field in all_local_fields(meta)])
         meta_index_names = [idx.name for idx in meta.indexes]
-        index_together = self.expand_together(meta.index_together, meta)
-        unique_together = self.expand_together(meta.unique_together, meta)
+        index_together = self.get_index_together(meta)
+        unique_together = self.get_unique_together(meta)
 
-        for constraint_name, constraint in six.iteritems(table_constraints):
+        for constraint_name, constraint in table_constraints.items():
             if constraint_name in meta_index_names:
                 continue
             if constraint['unique'] and not constraint['index']:
@@ -854,6 +871,10 @@ class MySQLDiff(SQLDiff):
 
             # extra check removed from superclass here, otherwise function is the same
             if len(columns) == 1:
+                if not field:
+                    # both index and field are missing from the model
+                    self.add_difference('index-missing-in-model', table_name, constraint_name)
+                    continue
                 if constraint['primary_key'] and field.primary_key:
                     continue
                 if constraint['foreign_key'] and isinstance(field, models.ForeignKey) and field.db_constraint:
@@ -888,7 +909,7 @@ class MySQLDiff(SQLDiff):
                 attname = field.db_column or field.attname
                 db_field_unique = table_indexes.get(attname, {}).get('unique')
                 if not db_field_unique and table_constraints:
-                    db_field_unique = any(constraint['unique'] for contraint_name, constraint in six.iteritems(table_constraints) if [attname] == constraint['columns'])
+                    db_field_unique = any(constraint['unique'] for contraint_name, constraint in table_constraints.items() if [attname] == constraint['columns'])
                 if attname in table_indexes and db_field_unique:
                     continue
 
@@ -901,10 +922,10 @@ class MySQLDiff(SQLDiff):
                 if db_type.startswith('text'):
                     self.add_difference('index-missing-in-db', table_name, [attname], index_name + '_like', ' text_pattern_ops')
 
-        unique_together = self.expand_together(meta.unique_together, meta)
+        unique_together = self.get_unique_together(meta)
 
         # This comparison changed from superclass - otherwise function is the same
-        db_unique_columns = normalize_together([v['columns'] for v in six.itervalues(table_constraints) if v['unique']])
+        db_unique_columns = normalize_together([v['columns'] for v in table_constraints.values() if v['unique']])
 
         for unique_columns in unique_together:
             if unique_columns in db_unique_columns:
@@ -943,15 +964,15 @@ class SqliteSQLDiff(SQLDiff):
 
         unique_columns = [field.db_column or field.attname for field in all_local_fields(meta) if field.unique]
 
-        for constraint in six.itervalues(table_constraints):
+        for constraint in table_constraints.values():
             columns = constraint['columns']
             if len(columns) == 1:
                 column = columns[0]
                 if column in unique_columns and (constraint['unique'] or constraint['primary_key']):
                     skip_list.append(column)
 
-        unique_together = self.expand_together(meta.unique_together, meta)
-        db_unique_columns = normalize_together([v['columns'] for v in six.itervalues(table_constraints) if v['unique']])
+        unique_together = self.get_unique_together(meta)
+        db_unique_columns = normalize_together([v['columns'] for v in table_constraints.values() if v['unique']])
 
         for unique_columns in unique_together:
             if unique_columns in db_unique_columns:
@@ -1189,7 +1210,7 @@ class PostgresqlSQLDiff(SQLDiff):
                 #       constraints for the type in `get_data_type_arrayfield` which instantiates
                 #       the array base_field or maybe even better restructure sqldiff entirely
                 #       to be based around the concrete type yielded by the code below. That gives
-                #       the complete type the database uses, why not use thie much earlier in the
+                #       the complete type the database uses, why not use this much earlier in the
                 #       process to compare to whatever django spits out as the desired database type ?
                 attname = field.db_column or field.attname
                 introspect_db_type = self.sql_to_dict(

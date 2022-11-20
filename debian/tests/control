@@ -1,12 +1,13 @@
 Tests: testsuite
-Depends: @,
-    python3-factory-boy,
-    python3-pytest,
-    python3-pytest-django,
-    python3-mock,
-    python3-pip,
-    python3-pygments (>= 2.7.1+dfsg-1~),
-    python3-shortuuid,
-    python3-vobject,
-    python3-werkzeug
+Depends:
+ python3-factory-boy,
+ python3-mock,
+ python3-pip,
+ python3-pygments (>= 2.7.1+dfsg-1~),
+ python3-pytest,
+ python3-pytest-django,
+ python3-shortuuid,
+ python3-vobject,
+ python3-werkzeug,
+ @,
 Restrictions: allow-stderr
