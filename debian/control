@@ -27,7 +27,7 @@ Testsuite: autopkgtest-pkg-python
 Vcs-Browser: https://salsa.debian.org/python-team/packages/python-django-extensions
 Vcs-Git: https://salsa.debian.org/python-team/packages/python-django-extensions.git
 Homepage: https://github.com/django-extensions/django-extensions
-XS-Pexip-Upstream: http://deb.debian.org/debian/ bullseye
+XS-Pexip-Upstream: http://deb.debian.org/debian/ bookworm
 
 Package: python3-django-extensions
 Architecture: all
