@@ -4,11 +4,11 @@ import os
 import re
 import tempfile
 from contextlib import contextmanager
+from io import StringIO
 
 from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.test import TestCase
-from six import StringIO
 
 
 def assert_looks_like_dotfile(output):
@@ -105,6 +105,26 @@ class GraphModelsOutputTests(TestCase):
         # use of --pygraphviz requires specifying output file
         with self.assertRaises(CommandError):
             call_command('graph_models', all_applications=True, pygraphviz=True)
+
+    def test_graph_models_relation_fields_only(self):
+        # use of --relation-fields-only ignores all non-relation-fields
+        stdout = StringIO()
+        call_command('graph_models', all_applications=True, stdout=stdout, json=True)
+        with_no_flag = json.loads(stdout.getvalue())
+
+        stdout = StringIO()
+        call_command('graph_models', all_applications=True, relation_fields_only=True, stdout=stdout, json=True)
+        with_flag = json.loads(stdout.getvalue())
+
+        # delete all entries for fields that do not display relations
+        for graph_idx, graph in reversed(list(enumerate(with_no_flag["graphs"]))):
+            for model_idx, model in reversed(list(enumerate(graph["models"]))):
+                for field_idx, field in reversed(list(enumerate(model["fields"]))):
+                    if field["type"] not in ["ForeignKey (id)", "AutoField", "OneToOneField (id)"] and not field["primary_key"]:
+                        del with_no_flag["graphs"][graph_idx]["models"][model_idx]["fields"][field_idx]
+
+        # assert that manually deleting all non-relation-fields is same as using the flag
+        self.assertEqual(with_no_flag, with_flag)
 
 
 def test_disable_abstract_fields_not_active():
