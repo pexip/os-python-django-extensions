@@ -2,7 +2,6 @@
 import unicodedata
 import binascii
 
-
 from django.core.exceptions import ValidationError
 from django.utils.deconstruct import deconstructible
 from django.utils.encoding import force_str
@@ -84,6 +83,8 @@ class HexValidator:
         self.max_length = max_length
         if message:
             self.message = message
+        else:
+            self.message = self.messages['invalid']
         if code:
             self.code = code
 
@@ -93,7 +94,7 @@ class HexValidator:
             raise ValidationError(self.messages['length'], code='hex_only_length', params={'length': self.length})
         if self.min_length and len(value) < self.min_length:
             raise ValidationError(self.messages['min_length'], code='hex_only_min_length', params={'min': self.min_length})
-        if self.max_length and len(value) < self.max_length:
+        if self.max_length and len(value) > self.max_length:
             raise ValidationError(self.messages['max_length'], code='hex_only_max_length', params={'max': self.max_length})
 
         try:

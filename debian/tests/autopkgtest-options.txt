@@ -4,6 +4,6 @@
 --ignore=tests/test_management_command.py
 --ignore=tests/management/commands/test_create_command.py
 --ignore=tests/management/commands/test_drop_test_database.py
+--ignore=tests/management/commands/test_managestate.py
 --ignore=tests/management/commands/test_reset_db.py
 --ignore=tests/management/commands/test_reset_schema.py
-

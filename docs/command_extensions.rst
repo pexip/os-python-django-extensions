@@ -16,8 +16,10 @@ Command Extensions
    graph_models
    list_model_info
    list_signals
+   managestate
    merge_model_instances
    print_settings
+   reset_db
    runprofileserver
    runserver_plus
    sync_s3
@@ -88,7 +90,7 @@ Command Extensions
 
 * *notes* - Show all annotations like TODO, FIXME, BUG, HACK, WARNING, NOTE or XXX in your py and HTML files.
 
-* *passwd* - Makes it easy to reset a user's password.
+* *passwd* - DEPRECATED: Use Django's ``changepassword``.
 
 * *pipchecker* - Scan pip requirement file(s)s for out-of-date packages. Similar to
   ``pip list -o`` which used installed packages (in virtualenv) instead of requirements file(s).
@@ -106,7 +108,9 @@ Command Extensions
   test via some automated system (BuildBot, Jenkins, etc) and making sure that
   the test database is always dropped at the end.
 
-* *reset_db* - Resets a database (currently sqlite3, mysql, postgres). Uses "DROP DATABASE" and "CREATE DATABASE".
+* *raise_test_exception* - Raises a test exception via command. Useful for debugging error reporters such as Sentry.
+
+* :doc:`reset_db` - Resets a database (currently sqlite3, mysql, postgres). Uses "DROP DATABASE" and "CREATE DATABASE".
 
 * *runjob* - Run a single maintenance job.  Part of the jobs system.
 

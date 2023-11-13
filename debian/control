@@ -1,69 +1,43 @@
 Source: python-django-extensions
 Maintainer: Pexip AS <packaging@pexip.com>
 XSBC-Pexip-Original-Maintainer: Debian Python Team <team+python@tracker.debian.org>
-XSBC-Pexip-Original-Uploaders: Brian May <bam@debian.org>
+XSBC-Pexip-Original-Uploaders:
+ Brian May <bam@debian.org>,
 Section: python
 Priority: optional
-Build-Depends: debhelper-compat (= 12),
-               dh-python,
-               python3-all,
-               python3-babel,
-               python3-dateutil,
-               python3-django,
-               python3-factory-boy,
-               python3-mock,
-               python3-pip,
-               python3-pytest,
-               python3-pytest-cov,
-               python3-pytest-django,
-               python3-setuptools,
-               python3-shortuuid,
-               python3-six,
-               python3-sphinx,
-               python3-vobject,
-               python3-werkzeug
-Standards-Version: 4.4.1
+Build-Depends:
+ debhelper-compat (= 13),
+ dh-python,
+ python3-all,
+ python3-babel,
+ python3-dateutil,
+ python3-django,
+ python3-factory-boy,
+ python3-mock,
+ python3-pip,
+ python3-pytest,
+ python3-pytest-cov,
+ python3-pytest-django,
+ python3-setuptools,
+ python3-shortuuid,
+ python3-sphinx,
+ python3-vobject,
+ python3-werkzeug,
+Rules-Requires-Root: no
+Standards-Version: 4.6.1
 Testsuite: autopkgtest-pkg-python
 Vcs-Browser: https://salsa.debian.org/python-team/packages/python-django-extensions
 Vcs-Git: https://salsa.debian.org/python-team/packages/python-django-extensions.git
 Homepage: https://github.com/django-extensions/django-extensions
 XS-Pexip-Upstream: http://deb.debian.org/debian/ bookworm
 
-Package: python3-django-extensions
-Architecture: all
-Depends: python3-django,
-         python3-six,
-         ${misc:Depends},
-         ${python3:Depends}
-Recommends: libjs-jquery
-Suggests: python3-boto,
-          python3-pygraphviz,
-          python3-werkzeug,
-          python-django-extensions-doc
-Description: Useful extensions for Django projects (Python 3 version)
- This is a collection of useful third-party tools for projects that use the
- Django web development framework. It provides the management commands:
- .
-  * runserver_plus - a "runserver" that uses the interactive Werkzeug debugger
-  * runprofileserver - starts runserver with profiling tools enabled
-  * shell_plus - similar to the built-in "shell" but autoloads all models
-  * graph_models - creates a GraphViz dot file of your model arrangement
-  * describe_form - generate template form definitions for a model
-  * export_emails - export the addresses of your users in many formats
-  * print_user_for_session - print the user information from a session key
-  * create_jobs/runjob/runjobs - manage scheduled maintenance jobs
-  * (plus many more)
- .
- python-django-extensions also includes a number of custom fields and abstract
- models, including ones that manage created and updated times automatically.
- .
- This package contains the Python 3 version of the library.
-
 Package: python-django-extensions-doc
 Section: doc
 Architecture: all
-Depends: ${misc:Depends},
-         ${sphinxdoc:Depends}
+Multi-Arch: foreign
+Depends:
+ ${misc:Depends},
+ ${sphinxdoc:Depends},
 Description: Useful extensions for Django projects (Documentation)
  This is a collection of useful third-party tools for projects that use the
  Django web development framework. It provides the management commands:
@@ -82,3 +56,35 @@ Description: Useful extensions for Django projects (Documentation)
  models, including ones that manage created and updated times automatically.
  .
  This package contains the documentation.
+
+Package: python3-django-extensions
+Architecture: all
+Depends:
+ python3-django,
+ ${misc:Depends},
+ ${python3:Depends},
+Recommends:
+ libjs-jquery,
+Suggests:
+ python-django-extensions-doc,
+ python3-boto,
+ python3-pygraphviz,
+ python3-werkzeug,
+Description: Useful extensions for Django projects (Python 3 version)
+ This is a collection of useful third-party tools for projects that use the
+ Django web development framework. It provides the management commands:
+ .
+  * runserver_plus - a "runserver" that uses the interactive Werkzeug debugger
+  * runprofileserver - starts runserver with profiling tools enabled
+  * shell_plus - similar to the built-in "shell" but autoloads all models
+  * graph_models - creates a GraphViz dot file of your model arrangement
+  * describe_form - generate template form definitions for a model
+  * export_emails - export the addresses of your users in many formats
+  * print_user_for_session - print the user information from a session key
+  * create_jobs/runjob/runjobs - manage scheduled maintenance jobs
+  * (plus many more)
+ .
+ python-django-extensions also includes a number of custom fields and abstract
+ models, including ones that manage created and updated times automatically.
+ .
+ This package contains the Python 3 version of the library.

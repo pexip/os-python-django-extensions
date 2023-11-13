@@ -1,21 +1,22 @@
 # -*- coding: utf-8 -*-
-import six
 import time
 import traceback
 from contextlib import contextmanager
 
-import django
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.backends import utils
 
+from django_extensions.settings import DEFAULT_PRINT_SQL_TRUNCATE_CHARS
+
 
 @contextmanager
-def monkey_patch_cursordebugwrapper(print_sql=None, print_sql_location=False, truncate=None, logger=six.print_, confprefix="DJANGO_EXTENSIONS"):
+def monkey_patch_cursordebugwrapper(print_sql=None, print_sql_location=False, truncate=None, logger=print, confprefix="DJANGO_EXTENSIONS"):
     if not print_sql:
         yield
     else:
-        truncate = getattr(settings, '%s_PRINT_SQL_TRUNCATE' % confprefix, 1000)
+        if truncate is None:
+            truncate = getattr(settings, '%s_PRINT_SQL_TRUNCATE' % confprefix, DEFAULT_PRINT_SQL_TRUNCATE_CHARS)
 
         # Code orginally from http://gist.github.com/118990
         sqlparse = None
@@ -85,15 +86,14 @@ def monkey_patch_cursordebugwrapper(print_sql=None, print_sql_location=False, tr
         utils.CursorDebugWrapper = PrintCursorQueryWrapper
 
         postgresql_base = None
-        if django.VERSION >= (3, 0):
-            try:
-                from django.db.backends.postgresql import base as postgresql_base
-                _PostgreSQLCursorDebugWrapper = postgresql_base.CursorDebugWrapper
+        try:
+            from django.db.backends.postgresql import base as postgresql_base
+            _PostgreSQLCursorDebugWrapper = postgresql_base.CursorDebugWrapper
 
-                class PostgreSQLPrintCursorDebugWrapper(PrintQueryWrapperMixin, _PostgreSQLCursorDebugWrapper):
-                    pass
-            except (ImproperlyConfigured, TypeError):
-                postgresql_base = None
+            class PostgreSQLPrintCursorDebugWrapper(PrintQueryWrapperMixin, _PostgreSQLCursorDebugWrapper):
+                pass
+        except (ImproperlyConfigured, TypeError):
+            postgresql_base = None
 
         if postgresql_base:
             postgresql_base.CursorDebugWrapper = PostgreSQLPrintCursorDebugWrapper
