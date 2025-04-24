@@ -1,4 +1,4 @@
 manage.py
-setup.cfg
+pyproject.toml
 tests
 django_extensions

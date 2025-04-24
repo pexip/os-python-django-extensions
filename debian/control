@@ -7,11 +7,12 @@ Priority: optional
 Build-Depends:
  debhelper-compat (= 13),
  dh-python,
+ pybuild-plugin-pyproject,
  python3-aiosmtpd,
  python3-all,
  python3-babel,
  python3-dateutil,
- python3-django,
+ python3-django (>= 3:4.2),
  python3-factory-boy,
  python3-pip,
  python3-pytest,
@@ -20,6 +21,7 @@ Build-Depends:
  python3-setuptools,
  python3-shortuuid,
  python3-sphinx,
+ python3-sphinx-rtd-theme,
  python3-vobject,
  python3-werkzeug,
 Rules-Requires-Root: no
@@ -65,7 +67,7 @@ Recommends:
  libjs-jquery,
 Suggests:
  python-django-extensions-doc,
- python3-boto,
+ python3-boto3,
  python3-pygraphviz,
  python3-werkzeug,
 Description: Useful extensions for Django projects (Python 3 version)
