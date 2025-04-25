@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import importlib.util
 import os
 from io import StringIO
 
@@ -166,10 +167,14 @@ class ResetDbPostgresqlTests(TestCase):
             mock.call('CREATE DATABASE "test_db" WITH OWNER = "foo"  ENCODING = \'UTF8\';'),
         ]
 
-        with mock.patch.dict("sys.modules", psycopg2=m_database):
+        mock_kwargs = {"psycopg2": m_database}
+        has_psycopg3 = importlib.util.find_spec("psycopg") is not None
+        if has_psycopg3:
+            mock_kwargs = {"psycopg": m_database}
+        with mock.patch.dict("sys.modules", **mock_kwargs):
             call_command('reset_db', '--noinput', verbosity=2)
 
-        m_database.connect.assert_called_once_with(database='template1', host='127.0.0.1', password='bar', port='5432', user='foo')
+        m_database.connect.assert_called_once_with(dbname='template1', host='127.0.0.1', password='bar', port='5432', user='foo')
 
         m_cursor.execute.assert_has_calls(expected_calls, any_order=False)
         self.assertEqual("Reset successful.\n", m_stdout.getvalue())
@@ -186,10 +191,14 @@ class ResetDbPostgresqlTests(TestCase):
             mock.call('CREATE DATABASE "test_db" WITH OWNER = "foo"  ENCODING = \'UTF8\' TABLESPACE = TEST_TABLESPACE;'),
         ]
 
-        with mock.patch.dict("sys.modules", psycopg2=m_database):
+        mock_kwargs = {"psycopg2": m_database}
+        has_psycopg3 = importlib.util.find_spec("psycopg") is not None
+        if has_psycopg3:
+            mock_kwargs = {"psycopg": m_database}
+        with mock.patch.dict("sys.modules", **mock_kwargs):
             call_command('reset_db', '--noinput', '--close-sessions', verbosity=2)
 
-        m_database.connect.assert_called_once_with(database='template1', host='127.0.0.1', password='bar', port='5432', user='foo')
+        m_database.connect.assert_called_once_with(dbname='template1', host='127.0.0.1', password='bar', port='5432', user='foo')
 
         m_cursor.execute.assert_has_calls(expected_calls, any_order=False)
         self.assertEqual("Reset successful.\n", m_stdout.getvalue())
