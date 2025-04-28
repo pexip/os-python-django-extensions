@@ -1,3 +1,28 @@
+python-django-extensions (3.2.3-2) unstable; urgency=medium
+
+  * Team upload
+  * d/p/0004: Disable dumpscript tests as a temporary solution
+    (Closes: #1066753)
+
+ -- Pierre-Elliott Bécue <peb@debian.org>  Thu, 25 Apr 2024 01:25:03 +0200
+
+python-django-extensions (3.2.3-1) unstable; urgency=medium
+
+  * Team upload
+  * New upstream version 3.2.3. Closes: #1058376
+  * Use github watch from uscan doc
+  * Standards-Version 4.6.2
+  * patch: python 3.12 compat
+  * build-depends: aiosmtpd
+  * debian/rules: use hooks
+  * Streamline tests using autopkgtest-pkg-pybuild,
+    pybuild.testfiles. Disable coverage for faster execution.
+
+  [ Alexandre Detiste ]
+  * remove extraneous dep. on python3-mock
+
+ -- Jérémy Lal <kapouer@melix.org>  Sat, 27 Jan 2024 12:03:45 +0100
+
 python-django-extensions (3.2.1-2+pexip24u3) pexip-bookworm; urgency=medium
 
   * New versioning scheme

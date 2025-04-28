@@ -18,11 +18,14 @@ jobs:
           - 3.8
           - 3.9
           - "3.10"
-          - "pypy3.9"
+          - "3.11"
+          # 2023-06-05: disabled pypy3.9 due to asgiref typing error
+          # - "pypy3.9"
         tox-django-version:
           - "32"
           - "40"
           - "41"
+          - "42"
           # GH Actions don't support something like allow-failure ?
           # - "master"
         exclude:
@@ -36,6 +39,12 @@ jobs:
             tox-django-version: "41"
           - python-version: "pypy3.9"
             tox-django-version: "41"
+          - python-version: "3.6"
+            tox-django-version: "42"
+          - python-version: "3.7"
+            tox-django-version: "42"
+          - python-version: "pypy3.9"
+            tox-django-version: "42"
     steps:
       - name: Checkout
         uses: actions/checkout@v3

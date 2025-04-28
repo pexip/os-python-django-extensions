@@ -11,15 +11,15 @@ Forwarded: not-needed
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/django_extensions/management/commands/runserver_plus.py b/django_extensions/management/commands/runserver_plus.py
-index 3f69485..6181f97 100644
+index 6ed2174..f69dc9d 100644
 --- a/django_extensions/management/commands/runserver_plus.py
 +++ b/django_extensions/management/commands/runserver_plus.py
-@@ -305,7 +305,7 @@ class Command(BaseCommand):
+@@ -353,7 +353,7 @@ class Command(BaseCommand):
  
      def inner_run(self, options):
          if not HAS_WERKZEUG:
--            raise CommandError("Werkzeug is required to use runserver_plus.  Please visit http://werkzeug.pocoo.org/ or install via pip. (pip install Werkzeug)")
-+            raise CommandError("Werkzeug is required to use runserver_plus.  Please install `python3-werkzeug'")
+-            raise CommandError("Werkzeug is required to use runserver_plus. Please visit https://werkzeug.palletsprojects.com/ or install via pip. (pip install Werkzeug)")
++            raise CommandError("Werkzeug is required to use runserver_plus. Please install `python3-werkzeug`")
  
          # Set colored output
          if settings.DEBUG:
