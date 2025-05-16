@@ -1,4 +1,4 @@
 0001-Use-local-stored-images-to-prevent-privacy-breach.patch
-0002-Update-reference-to-python-werzeug-package.patch
-python-3-12.patch
+0002-Update-reference-to-python-werkzeug-package.patch
 0004-Disable-dumpscript-tests.patch
+old-pygments.patch

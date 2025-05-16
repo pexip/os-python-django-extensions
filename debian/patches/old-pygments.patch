@@ -1,0 +1,25 @@
+From: Colin Watson <cjwatson@debian.org>
+Date: Thu, 24 Apr 2025 11:53:34 +0100
+Subject: Tolerate pygments < 2.19.0
+
+This patch can be dropped once Debian updates pygments.
+
+Forwarded: not-needed
+Last-Update: 2025-04-24
+---
+ tests/templatetags/test_highlighting.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tests/templatetags/test_highlighting.py b/tests/templatetags/test_highlighting.py
+index fe001f0..42da808 100644
+--- a/tests/templatetags/test_highlighting.py
++++ b/tests/templatetags/test_highlighting.py
+@@ -32,7 +32,7 @@ class HighlightTagTests(TestCase):
+ def need_food(self):
+     print("Love is colder than death")
+ {% endhighlight %}"""
+-        expected_result = """<div class="predesc"><span>Excerpt: blah.py</span></div><div class="highlight"><pre><span></span><span class="k">def</span> <span class="w"> </span><span class="nf">need_food</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
++        expected_result = """<div class="predesc"><span>Excerpt: blah.py</span></div><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">need_food</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Love is colder than death&quot;</span><span class="p">)</span>
+ </pre></div>"""
+         result = Template(content).render(self.ctx)
